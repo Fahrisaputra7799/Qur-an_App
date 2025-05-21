@@ -7,8 +7,11 @@ environment:
   sdk: ^3.8.0-278.1.beta
 
 dependencies:
+  cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
+  google_fonts: ^6.2.1
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:
