@@ -10,8 +10,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
+  font_awesome_flutter: ^10.8.0
   google_fonts: ^6.2.1
   http: ^1.4.0
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

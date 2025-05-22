@@ -9,6 +9,7 @@ class QuranService {
   static Future<List<Surah>> fetchSurahList() async {
     final response = await http.get(Uri.parse('$baseUrl/surah'));
     if (response.statusCode == 200) {
+          print(jsonDecode(response.body));
       final data = json.decode(response.body);
       return (data['data'] as List)
           .map((json) => Surah.fromJson(json))

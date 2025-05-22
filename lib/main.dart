@@ -10,7 +10,7 @@ class QuranApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Al-Qur\'an App',
+      title: 'Al-Qur\'an Ku',
       theme: ThemeData(primarySwatch: Colors.green),
       home: HomePage(),
     );

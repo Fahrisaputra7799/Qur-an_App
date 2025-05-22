@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Surah> surahs = [];
   String selectedCategory = 'Surah';
+  List<int> bookmarkedSurahNumbers = [];
 
   @override
   void initState() {
@@ -33,11 +34,50 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildContent() {
     if (selectedCategory == 'Surah') {
-      return SurahListView(surahs: surahs);
+      return SurahListView(
+        surahs: surahs,
+        onBookmarkTap: (surah) {
+          setState(() {
+            if (bookmarkedSurahNumbers.contains(surah.number)) {
+              bookmarkedSurahNumbers.remove(surah.number);
+            } else {
+              bookmarkedSurahNumbers.add(surah.number);
+            }
+          });
+        },
+        isBookmarked: (surah) => bookmarkedSurahNumbers.contains(surah.number),
+      );
+    } else if (selectedCategory == 'Hafalan') {
+      // Filter surah yang sudah dibookmark saja
+      final bookmarkedSurahs =
+          surahs
+              .where((surah) => bookmarkedSurahNumbers.contains(surah.number))
+              .toList();
+
+      if (bookmarkedSurahs.isEmpty) {
+        return Center(
+          child: Text(
+            'Belum Ada Hafalan',
+            style: GoogleFonts.poppins(color: Colors.black),
+          ),
+        );
+      }
+
+      return SurahListView(
+        surahs: bookmarkedSurahs,
+        onBookmarkTap: (surah) {
+          setState(() {
+            bookmarkedSurahNumbers.remove(surah.number);
+          });
+        },
+        isBookmarked: (surah) => true, // karena sudah pasti bookmarked di sini
+      );
     } else {
-      return Text(
-        'Cooming Soon',
-        style: GoogleFonts.poppins(color: Colors.black),
+      return Center(
+        child: Text(
+          'Coming Soon',
+          style: GoogleFonts.poppins(color: Colors.black),
+        ),
       );
     }
   }
@@ -45,54 +85,67 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 900),
-          child: Container(
-            padding: EdgeInsets.only(top: 12),
-            decoration: BoxDecoration(color: Colors.white),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Text(
-                    'Selected Sura',
-                    style: GoogleFonts.poppins(
-                      color: Color(0xff437988),
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold
+      backgroundColor: Colors.grey[200],
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 700),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 12,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// HEADER
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Al-Qur\'an',
+                          style: GoogleFonts.poppins(
+                            color: Color(0xff437988),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Text('To Read', style: GoogleFonts.montserrat(
-                    color: Color(0xff437988),
-                    fontSize: 24
-                  ),),
-                ),
-                const SizedBox(height: 16),
-                CategorySelector(
-                  selected: selectedCategory,
-                  onSelected: (value) {
-                    setState(() {
-                      selectedCategory = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 8,
-                    ),
-                    child: buildContent(),
+                  const SizedBox(height: 16),
+
+                  /// CATEGORY SELECTOR
+                  CategorySelector(
+                    selected: selectedCategory,
+                    onSelected: (value) {
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    },
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16),
+
+                  /// CONTENT
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: buildContent(),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

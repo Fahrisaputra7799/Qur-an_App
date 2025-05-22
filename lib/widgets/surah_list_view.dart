@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import '../models/surah_model.dart';
-import '../pages/detail_page.dart';
-import 'surah_tile.dart';
+import 'package:quran_apps/models/surah_model.dart';
+import 'package:quran_apps/pages/detail_page.dart';
+import 'package:quran_apps/widgets/surah_tile.dart';
 
 class SurahListView extends StatelessWidget {
   final List<Surah> surahs;
+  final Function(Surah) onBookmarkTap;
+  final bool Function(Surah) isBookmarked;
 
-  const SurahListView({super.key, required this.surahs});
+  const SurahListView({
+    super.key,
+    required this.surahs,
+    required this.onBookmarkTap,
+    required this.isBookmarked,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +38,8 @@ class SurahListView extends StatelessWidget {
               ),
             );
           },
+          onBookmarkTap: () => onBookmarkTap(surah),
+          isBookmarked: isBookmarked(surah),
         );
       },
     );
